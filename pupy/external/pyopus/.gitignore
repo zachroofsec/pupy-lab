@@ -1,0 +1,8 @@
+src/opus.so
+src/*.o
+src/*.obj
+src/*.pyd
+example/*.pyc
+example/*.pyo
+example/*.opus
+example/*.pcm

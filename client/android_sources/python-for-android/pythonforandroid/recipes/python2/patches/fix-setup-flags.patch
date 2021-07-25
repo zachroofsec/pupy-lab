@@ -1,0 +1,17 @@
+--- Python-2.7.15/setup.py.orig	2012-01-08 15:10:39.867332119 +0100
++++ Python-2.7.15/setup.py	2012-01-08 15:10:45.723331911 +0100
+@@ -527,6 +527,14 @@
+                 '/lib', '/usr/lib',
+                 ):
+                 add_dir_to_list(lib_dirs, d)
++        else:
++            cflags = os.environ.get('CFLAGS')
++            if cflags:
++                inc_dirs += [x[2:] for x in cflags.split() if x.startswith('-I')]
++            ldflags = os.environ.get('LDFLAGS')
++            if ldflags:
++                lib_dirs += [x[2:] for x in ldflags.split() if x.startswith('-L')]
++
+         exts = []
+         missing = []
+ 
