@@ -1,0 +1,16 @@
+#!/bin/sh
+set -xe
+docker start -a build-pupy-linux64-5806
+cd /Users/zachroof/repos/bctf/infra.sandbox-account/pluralsight-labs/pupy/pupy-repo
+prev_ref=`git rev-parse HEAD`
+git pull --recurse-submodules=yes --autostash --rebase
+echo "[+] Update docker environment"
+docker build -t pupy-python2-env -f /Users/zachroof/repos/bctf/infra.sandbox-account/pluralsight-labs/pupy/pupy-repo/pupy/conf/Dockerfile.env /Users/zachroof/repos/bctf/infra.sandbox-account/pluralsight-labs/pupy/pupy-repo/pupy
+docker kill pupy-6557 || true
+docker rm pupy-6557
+docker create --security-opt label=disable --hostname=pupy --network=host --name=pupy-6557 --interactive --tty --mount type=bind,src=/Users/zachroof/repos/bctf/infra.sandbox-account/pluralsight-labs/pupy/pupy-repo/pupy,target=/pupy --mount type=bind,src=/Users/zachroof/repos/bctf/infra.sandbox-account/pluralsight-labs/pupy/pupy-repo/pupy-workspace,target=/project pupy-python2-env
+if (git diff --name-only $prev_ref HEAD | grep client/ >/dev/null)
+then
+echo "[+] Rebuilding templates for linux64"
+docker start -a build-pupy-linux64-5806
+fi
