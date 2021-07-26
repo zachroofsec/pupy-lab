@@ -1,2 +1,0 @@
-#!/bin/sh
-exec docker start -ai pupy-6557
